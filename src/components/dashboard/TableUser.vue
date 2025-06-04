@@ -10,6 +10,7 @@ const UDropdownMenu = resolveComponent("UDropdownMenu");
 
 const tableUsersStore = useTableUsersStore();
 const editUserStore = useEditUserStore();
+const signupStore = useSignupStore();
 
 const columns: TableColumn<Partial<UserType>>[] = [
     {
@@ -133,6 +134,12 @@ const columns: TableColumn<Partial<UserType>>[] = [
                     aria-label="Columns select dropdown"
                 />
             </UDropdownMenu>
+            <UButton
+                label="Novo usuário"
+                class="bg-[#FF7F11] hover:bg-[#e56e00] text-white rounded-lg px-4 py-2"
+                variant="solid"
+                @click="signupStore.openDialog"
+            />
         </div>
 
         <UTable
@@ -160,6 +167,7 @@ const columns: TableColumn<Partial<UserType>>[] = [
                 class="text-white"
             />
             <DashboardModalEditUser />
+            <DashboardModalNewUser />
         </div>
     </div>
 </template>

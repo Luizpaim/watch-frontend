@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 const notifications = ref(0);
 
@@ -7,13 +7,18 @@ function clearNotifications() {
     notifications.value = 0;
 }
 
-onMounted(() => {
-    const { on } = useSocket();
+const { on, off } = useSocket();
+const handler = (payload: any) => {
+    console.log("🟢 Mensagem recebida do servidor:", payload);
+    notifications.value++;
+};
 
-    on("update-user", (payload) => {
-        console.log("🟢 Mensagem recebida do servidor:", payload);
-        notifications.value++;
-    });
+onMounted(() => {
+    on("update-user", handler);
+});
+
+onUnmounted(() => {
+    off("update-user", handler);
 });
 </script>
 

@@ -1,50 +1,46 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { io, type Socket } from "socket.io-client";
+import { ref, computed, watch } from "vue";
 
-let socket: Socket;
+let socket: Socket | null = null;
+const currentSocket = ref<Socket | null>(null);
 
 export const useSocket = () => {
   const user = useCookie<UserType>("user");
-
-  const token = ref<string>();
-
-  if (user?.value?.accessToken) {
-    token.value = user.value.accessToken;
-  }
-
+  const token = computed(() => user?.value?.accessToken);
   const config = useRuntimeConfig();
-
   const baseURL = config.public.apiGateway as string;
 
-  if (!socket) {
-    socket = io(baseURL, {
-      transports: ["websocket"],
-      withCredentials: true,
-      auth: {
-        token: token.value,
-      },
-    });
-
-    socket.on("connect", () => {
-      console.log("✅ Socket conectado:", socket.id);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("🔌 Socket desconectado");
-    });
-  }
+  watch(
+    token,
+    (newToken) => {
+      if (socket) {
+        socket.disconnect();
+        socket = null;
+        currentSocket.value = null;
+      }
+      if (newToken) {
+        socket = io(baseURL, {
+          transports: ["websocket"],
+          withCredentials: true,
+          auth: { token: newToken },
+        });
+        currentSocket.value = socket;
+        socket.on("connect", () =>
+          console.log("✅ Socket conectado:", socket?.id),
+        );
+        socket.on("disconnect", () => console.log("🔌 Socket desconectado"));
+      }
+    },
+    { immediate: true },
+  );
 
   const on = (event: string, callback: (...args: any[]) => void) => {
-    socket.on(event, callback);
+    currentSocket.value?.on(event, callback);
   };
 
-  const off = (event: string) => {
-    socket.off(event);
+  const off = (event: string, callback: (...args: any[]) => void) => {
+    currentSocket.value?.off(event, callback);
   };
 
-  return {
-    socket,
-    on,
-    off,
-  };
+  return { socket: currentSocket, on, off };
 };
