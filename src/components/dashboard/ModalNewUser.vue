@@ -9,8 +9,8 @@ const signupStore = useSignupStore();
     <div>
         <UModal
             v-model:open="signupStore.viewDialog"
-            title="Editar Nome do Usuário"
-            description="Altere o nome do usuário e clique em Salvar"
+            title="Novo Usuário"
+            description="Informe os dados para cadastrar um novo usuário"
             :ui="{
                 base: 'bg-[#0D0D0D] text-white rounded-xl',
                 header: 'border-none bg-transparent',
@@ -66,7 +66,7 @@ const signupStore = useSignupStore();
                                 ' focus-within:ring-2 focus-within:ring-[#FF7F11]',
                         }"
                     />
-                    <div class="w-full flex align-center justify-end gap-3">
+                    <div class="w-full flex align-center justify-end gap-3 mt-7">
                         <UButton
                             label="Cancelar"
                             class="bg-[#292929] hover:bg-[#444] text-white rounded-lg px-4 py-2"
