@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { h, resolveComponent } from "vue";
 import { upperFirst } from "scule";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 import type { TableColumn } from "@nuxt/ui";
 
@@ -42,15 +44,11 @@ const columns: TableColumn<Partial<UserType>>[] = [
     },
     {
         accessorKey: "createdAt",
-        header: "Data Criação",
+        header: "Data criação",
         cell: ({ row }) => {
-            return new Date(row.getValue("date")).toLocaleString("en-US", {
-                day: "numeric",
-                month: "short",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false,
-            });
+            const raw = row.getValue("createdAt");
+            const date = new Date(String(raw));
+            return format(date, "dd/MM/yyyy HH:mm", { locale: ptBR });
         },
     },
 
@@ -66,11 +64,18 @@ const columns: TableColumn<Partial<UserType>>[] = [
                 {
                     label: "Editar",
                     async onSelect() {
-                        await editUserStore.openModal(String(row.original.id));
+                        await editUserStore.openModalEdit(
+                            String(row.original.id),
+                        );
                     },
                 },
                 {
                     label: "Excluir",
+                    async onSelect() {
+                        await editUserStore.openModalDelete(
+                            String(row.original.id),
+                        );
+                    },
                 },
             ];
 
@@ -155,18 +160,8 @@ const columns: TableColumn<Partial<UserType>>[] = [
             </template>
         </UTable>
         <div class="flex justify-center mt-4">
-            <UPagination
-                v-model="tableUsersStore.page"
-                color="neutral"
-                variant="soft"
-                :page-count="
-                    Math.ceil(
-                        tableUsersStore.users.length / tableUsersStore.pageSize,
-                    )
-                "
-                class="text-white"
-            />
             <DashboardModalEditUser />
+            <DashboardModalDeleteUser />
             <DashboardModalNewUser />
         </div>
     </div>

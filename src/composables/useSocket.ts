@@ -25,10 +25,8 @@ export const useSocket = () => {
           auth: { token: newToken },
         });
         currentSocket.value = socket;
-        socket.on("connect", () =>
-          console.log("✅ Socket conectado:", socket?.id),
-        );
-        socket.on("disconnect", () => console.log("🔌 Socket desconectado"));
+        socket.on("connect", () => true);
+        socket.on("disconnect", () => false);
       }
     },
     { immediate: true },

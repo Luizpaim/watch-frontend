@@ -9,8 +9,8 @@ function clearNotifications() {
 
 const { on, off } = useSocket();
 const handler = (payload: any) => {
-    console.log("🟢 Mensagem recebida do servidor:", payload);
     notifications.value++;
+    return payload;
 };
 
 onMounted(() => {

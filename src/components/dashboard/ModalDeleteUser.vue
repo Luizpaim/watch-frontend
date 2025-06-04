@@ -7,9 +7,9 @@ const editUserStore = useEditUserStore();
 <template>
     <div>
         <UModal
-            v-model:open="editUserStore.openEdit"
-            title="Editar Nome do Usuário"
-            description="Altere o nome do usuário e clique em Salvar"
+            v-model:open="editUserStore.openDelete"
+            title="Confirmação!"
+            description="Tem certeza que deseja excluir esse usuário ?"
             :ui="{
                 header: 'border-none bg-transparent',
                 footer: 'justify-end border-none bg-transparent',
@@ -24,6 +24,7 @@ const editUserStore = useEditUserStore();
                     class="w-full bg-[#1E1B4B] text-white border-none rounded-lg mb-2"
                     autofocus
                     size="xl"
+                    disabled
                 />
             </template>
 
@@ -32,14 +33,14 @@ const editUserStore = useEditUserStore();
                     label="Cancelar"
                     class="bg-[#292929] hover:bg-[#444] text-white rounded-lg px-4 py-2"
                     variant="solid"
-                    @click="editUserStore.closeModalEdit"
+                    @click="editUserStore.closeModalDelete"
                 />
                 <UButton
-                    label="Salvar"
+                    label="Excluir"
                     class="bg-[#FF7F11] hover:bg-[#e56e00] text-white rounded-lg px-4 py-2"
                     variant="solid"
                     :loading="editUserStore.loadingUser"
-                    @click="editUserStore.saveUser"
+                    @click="editUserStore.deleteUser"
                 />
             </template>
         </UModal>
